@@ -4,12 +4,30 @@ author: "Anil Goyal"
 date: "2024-04-10"
 output: html_document
 ---
+## Load libraries
+```{r}
+library(readxl)
+library(tidyverse)
+```
+
+
+## PQ Challenge 171
+
+```{r}
+df <- read_xlsx("PQ/PQ_Challenge_171.xlsx", range = cell_cols(LETTERS[1:6]))
+
+split.default(1:6, (0:5 %% 3) + 1) %>% 
+  map_dfr(~df %>% 
+        select(all_of(.x)) %>% 
+        rename_with(~ paste0("Col", 1:2))) %>% 
+  filter(if_any(everything(), ~!is.na(.)))
+```
+
 
 ## PQ Challenge 172
 
 ```{r}
-library(readxl)
-library(tidyverse)
+
 
 df <- read_xlsx("PQ/PQ_Challenge_172.xlsx", range = cell_cols(LETTERS[1:6]))
 df %>% 
