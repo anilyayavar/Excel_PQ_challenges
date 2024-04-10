@@ -1,0 +1,27 @@
+---
+title: "PQ Challenge"
+author: "Anil Goyal"
+date: "2024-04-10"
+output: html_document
+---
+
+## PQ Challenge 172
+
+```{r}
+library(readxl)
+library(tidyverse)
+
+df <- read_xlsx("PQ/PQ_Challenge_172.xlsx", range = cell_cols(LETTERS[1:6]))
+df %>% 
+  janitor::clean_names() %>% 
+  separate(share_percent, into = paste0("Share", 1:2), convert = TRUE) %>% 
+  pivot_longer(cols = c(starts_with("agent"), starts_with("Share")), 
+               names_pattern = "(\\D*)(\\d)",
+               names_to = c(".value", "num"),
+               values_drop_na = TRUE) %>% 
+  complete(fill = list(Share = 100)) %>% 
+  mutate(amt = amount * commission_percent * Share/10000) %>% 
+  summarise(Commission = sum(amt), .by = agent) %>% 
+  janitor::adorn_totals()
+```
+
