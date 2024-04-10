@@ -24,7 +24,18 @@ df %>%
   summarise(Regions = str_c(Region, collapse = ", "))
 ```
 
-```{r}
+## Excel Challenge 430
 
+```{r}
+map_dfr(1:26,
+    ~ seq(from = 2*.x -1, length.out = 27 - .x) %>% 
+      as_tibble() %>% 
+      set_names("x") %>% 
+      mutate(char = LETTERS[seq(27 - .x)],
+             y = 27 - .x)) %>% 
+  ggplot(aes(x, y, label = char)) +
+  geom_text() +
+  scale_x_reverse() +
+  theme_void()
 ```
 
