@@ -1,0 +1,30 @@
+---
+title: "Excel Challenges"
+author: "Anil Goyal"
+date: "2024-04-10"
+output: html_document
+---
+
+## Excel Challenge 431 (Date: 10 April 2024)
+
+```{r}
+library(readxl)
+library(tidyverse)
+
+df <- read_excel("Excel/Excel_Challenge_431 - Top 3 Rankings.xlsx", range = cell_cols(LETTERS[1:8]))
+
+df %>%
+  mutate(across(-Region, ~ dense_rank(-1 * as.numeric(.x)))) %>% 
+  pivot_longer(-Region, names_to = "Year", values_to = "Rank") %>% 
+  filter(Rank %in% 1:3) %>% 
+  summarise(rank_counts = n(),
+            .by = c(Region, Rank)) %>% 
+  group_by(Rank) %>% 
+  slice_max(rank_counts, n = 1) %>% 
+  summarise(Regions = str_c(Region, collapse = ", "))
+```
+
+```{r}
+
+```
+
