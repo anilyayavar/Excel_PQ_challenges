@@ -11,6 +11,17 @@ library(tidyverse)
 ```
 
 
+## PQ Challenge 169: Extract specific strings
+It combines both lookahead and lookbehind in one string
+```{r}
+df <- read_xlsx("PQ/PQ_Challenge_169.xlsx", range = cell_cols(LETTERS[1]))
+df %>% 
+  mutate(Codes = map_chr(String, ~ str_extract_all(.x, pattern = "(?<=\\b)[A-Z]+\\d+[A-Z0-9]+(?=\\b)") %>% 
+                           unlist() %>% 
+                           str_c(collapse = ", ")))
+```
+
+
 ## PQ Challenge 170: Weekdays and Weekends
 ```{r}
 df <- read_xlsx("PQ/PQ_Challenge_170.xlsx", range = cell_cols(LETTERS[1:3]))

@@ -372,6 +372,25 @@ library(tidyverse)</code></pre>
 ## ✖ dplyr::lag()    masks stats::lag()
 ## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
+<div id="pq-challenge-169-extract-specific-strings" class="section level2">
+<h2>PQ Challenge 169: Extract specific strings</h2>
+<p>It combines both lookahead and lookbehind in one string</p>
+<pre class="r"><code>df &lt;- read_xlsx(&quot;PQ/PQ_Challenge_169.xlsx&quot;, range = cell_cols(LETTERS[1]))
+df %&gt;% 
+  mutate(Codes = map_chr(String, ~ str_extract_all(.x, pattern = &quot;(?&lt;=\\b)[A-Z]+\\d+[A-Z0-9]+(?=\\b)&quot;) %&gt;% 
+                           unlist() %&gt;% 
+                           str_c(collapse = &quot;, &quot;)))</code></pre>
+<pre><code>## # A tibble: 7 × 2
+##   String                            Codes                 
+##   &lt;chr&gt;                             &lt;chr&gt;                 
+## 1 State is AB883783 and Q7837837    &quot;AB883783, Q7837837&quot;  
+## 2 Reporting DF6733A89, B770, ABD    &quot;DF6733A89, B770&quot;     
+## 3 Q6736A142 in Plant 673            &quot;Q6736A142&quot;           
+## 4 6736A56356 and 9A8838A            &quot;&quot;                    
+## 5 Q#6673, Q6679, QQQ123a            &quot;Q6679&quot;               
+## 6 Countryside no A556,BA878,ASB7888 &quot;A556, BA878, ASB7888&quot;
+## 7 c66736 in A8B8C9                  &quot;A8B8C9&quot;</code></pre>
+</div>
 <div id="pq-challenge-170-weekdays-and-weekends" class="section level2">
 <h2>PQ Challenge 170: Weekdays and Weekends</h2>
 <pre class="r"><code>df &lt;- read_xlsx(&quot;PQ/PQ_Challenge_170.xlsx&quot;, range = cell_cols(LETTERS[1:3]))
