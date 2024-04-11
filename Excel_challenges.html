@@ -357,21 +357,48 @@ display: none;
 </div>
 
 
-<div id="excel-challenge-431-date-10-april-2024" class="section level2">
-<h2>Excel Challenge 431 (Date: 10 April 2024)</h2>
-<pre class="r"><code>library(readxl)
-library(tidyverse)</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-## ✔ dplyr     1.1.4     ✔ readr     2.1.4
-## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-## ✔ ggplot2   3.4.4     ✔ tibble    3.2.1
-## ✔ lubridate 1.9.3     ✔ tidyr     1.3.0
-## ✔ purrr     1.0.2     
+## ✔ dplyr     1.1.2     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.5.0
+## ✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+## ✔ purrr     1.0.1     
 ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()
 ## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
-<pre class="r"><code>df &lt;- read_excel(&quot;Excel/Excel_Challenge_431 - Top 3 Rankings.xlsx&quot;, range = cell_cols(LETTERS[1:8]))
+<pre class="r"><code>library(readxl)
+library(janitor)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;janitor&#39;
+## 
+## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     chisq.test, fisher.test</code></pre>
+<div id="excel-challenge-432-bifid-cipher" class="section level2">
+<h2>Excel Challenge 432: BIFID CIPHER</h2>
+<pre class="r"><code>bifid &lt;- function(WORD){
+  str_split(WORD, &quot;&quot;)  %&gt;% 
+    unlist() %&gt;% 
+    map(~ which(matrix(LETTERS[-10], nrow = 5, byrow = TRUE) == .x, arr.ind = TRUE) %&gt;% as.vector()) %&gt;% 
+    unlist() %&gt;% 
+    matrix(ncol = 2, byrow = TRUE) %&gt;% 
+    as.vector() %&gt;% 
+    split.default(., ((seq_along(.) - 1) %/% 2) + 1 ) %&gt;% 
+    map_chr(~matrix(LETTERS[-10], nrow = 5, byrow = TRUE)[.x[1], .x[2]]) %&gt;% 
+    str_c(collapse = &quot;&quot;)
+}
+
+map_chr(c(&quot;BATTLE&quot;, &quot;FLEX&quot;), bifid)</code></pre>
+<pre><code>## [1] &quot;ATLFTE&quot; &quot;HEAX&quot;</code></pre>
+</div>
+<div id="excel-challenge-431-date-10-april-2024" class="section level2">
+<h2>Excel Challenge 431 (Date: 10 April 2024)</h2>
+<pre class="r"><code>library(readxl)
+library(tidyverse)
+
+df &lt;- read_excel(&quot;Excel/Excel_Challenge_431 - Top 3 Rankings.xlsx&quot;, range = cell_cols(LETTERS[1:8]))
 
 df %&gt;%
   mutate(across(-Region, ~ dense_rank(-1 * as.numeric(.x)))) %&gt;% 

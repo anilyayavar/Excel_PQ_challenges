@@ -4,6 +4,32 @@ author: "Anil Goyal"
 date: "2024-04-10"
 output: html_document
 ---
+```{r}
+library(tidyverse)
+library(readxl)
+library(janitor)
+```
+
+
+
+## Excel Challenge 432: BIFID CIPHER
+
+```{r}
+bifid <- function(WORD){
+  str_split(WORD, "")  %>% 
+    unlist() %>% 
+    map(~ which(matrix(LETTERS[-10], nrow = 5, byrow = TRUE) == .x, arr.ind = TRUE) %>% as.vector()) %>% 
+    unlist() %>% 
+    matrix(ncol = 2, byrow = TRUE) %>% 
+    as.vector() %>% 
+    split.default(., ((seq_along(.) - 1) %/% 2) + 1 ) %>% 
+    map_chr(~matrix(LETTERS[-10], nrow = 5, byrow = TRUE)[.x[1], .x[2]]) %>% 
+    str_c(collapse = "")
+}
+
+map_chr(c("BATTLE", "FLEX"), bifid)
+```
+
 
 ## Excel Challenge 431 (Date: 10 April 2024)
 
