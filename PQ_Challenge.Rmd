@@ -11,6 +11,20 @@ library(tidyverse)
 ```
 
 
+## PQ Challenge 170: Weekdays and Weekends
+```{r}
+df <- read_xlsx("PQ/PQ_Challenge_170.xlsx", range = cell_cols(LETTERS[1:3]))
+
+df %>% 
+  group_by(`Day Type` = c("Weekday", "Weekend")[1 + weekdays(Date, abbreviate = TRUE) %in% c("Sat", "Sun")], Item) %>% 
+  summarise(Sales = sum(Sale), .groups = 'drop') %>% 
+  summarise(`Total Sales` = sum(Sales), 
+            `Highest Selling Item` = str_c(Item[Sales == max(Sales)], collapse = ", "),
+            `Lowest Selling Item` = str_c(Item[Sales == min(Sales)], collapse = ", "),
+            .by = `Day Type`)
+```
+
+
 ## PQ Challenge 171
 
 ```{r}
