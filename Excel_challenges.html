@@ -359,11 +359,11 @@ display: none;
 
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-## ✔ dplyr     1.1.2     ✔ readr     2.1.4
-## ✔ forcats   1.0.0     ✔ stringr   1.5.0
-## ✔ ggplot2   3.4.2     ✔ tibble    3.2.1
-## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
-## ✔ purrr     1.0.1     
+## ✔ dplyr     1.1.4     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+## ✔ ggplot2   3.4.4     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.3     ✔ tidyr     1.3.0
+## ✔ purrr     1.0.2     
 ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()
@@ -376,6 +376,38 @@ library(janitor)</code></pre>
 ## The following objects are masked from &#39;package:stats&#39;:
 ## 
 ##     chisq.test, fisher.test</code></pre>
+<div id="excel-challenge-433-parsing-the-filedata" class="section level2">
+<h2>Excel Challenge 433: parsing the file/data</h2>
+<pre class="r"><code>df &lt;- read_excel(&quot;Excel/Excel_Challenge_433 - Text Split.xlsx&quot;, range = cell_cols(LETTERS[1]))
+
+df %&gt;% 
+  separate(Text, into = c(&quot;Levels&quot;, &quot;Names&quot;), sep = &quot;:&quot;) %&gt;% 
+  mutate(across(everything(), str_squish)) %&gt;% 
+  separate(Levels, into = paste0(&quot;Level&quot;, 1:3), sep = &quot;\\.&quot;, fill = &quot;right&quot;) %&gt;% 
+  separate(Names, into = c(&quot;First Name&quot;, &quot;Last Name&quot;), sep = &quot; &quot;, fill = &quot;right&quot;)</code></pre>
+<pre><code>## # A tibble: 19 × 5
+##    Level1 Level2 Level3 `First Name` `Last Name`
+##    &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;        &lt;chr&gt;      
+##  1 1      &lt;NA&gt;   &lt;NA&gt;   Rachel       Hall       
+##  2 1      1      &lt;NA&gt;   Esther       Roberts    
+##  3 1      2      &lt;NA&gt;   Donald       Thomas     
+##  4 1      2      1      Kathleen     Walker     
+##  5 1      2      2      Brian        Thompson   
+##  6 2      &lt;NA&gt;   &lt;NA&gt;   Jacob        Walker     
+##  7 2      1      &lt;NA&gt;   Ronald       Sanchez    
+##  8 2      2      &lt;NA&gt;   Teresa       Reed       
+##  9 2      3      &lt;NA&gt;   Jordan       Richardson 
+## 10 3      &lt;NA&gt;   &lt;NA&gt;   Roger        Gutierrez  
+## 11 3      1      &lt;NA&gt;   Frances      Cooper     
+## 12 3      1      1      Carl         Cooper     
+## 13 3      1      2      Katherine    Adams      
+## 14 3      1      3      Douglas      Cruz       
+## 15 3      2      &lt;NA&gt;   Justin       Nguyen     
+## 16 3      3      &lt;NA&gt;   Dylan        Kim        
+## 17 4      &lt;NA&gt;   &lt;NA&gt;   Robert       Johnson    
+## 18 5      &lt;NA&gt;   &lt;NA&gt;   Aaron        Phillips   
+## 19 5      1      &lt;NA&gt;   Daniel       Lopez</code></pre>
+</div>
 <div id="excel-challenge-432-bifid-cipher" class="section level2">
 <h2>Excel Challenge 432: BIFID CIPHER</h2>
 <pre class="r"><code>bifid &lt;- function(WORD){
