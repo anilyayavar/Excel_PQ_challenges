@@ -371,6 +371,13 @@ library(tidyverse)</code></pre>
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()
 ## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<pre class="r"><code>library(janitor)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;janitor&#39;
+## 
+## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     chisq.test, fisher.test</code></pre>
 </div>
 <div id="pq-challenge-169-extract-specific-strings" class="section level2">
 <h2>PQ Challenge 169: Extract specific strings</h2>
@@ -459,6 +466,56 @@ df %&gt;%
 ##      C    1866.88
 ##      D    1292.56
 ##  Total    6732.80</code></pre>
+</div>
+<div id="pq-challenge-173" class="section level2">
+<h2>PQ Challenge 173</h2>
+<pre class="r"><code>df &lt;- read_xlsx(&quot;PQ/PQ_Challenge_173.xlsx&quot;, range = cell_cols(LETTERS[1:2]))
+
+df %&gt;% 
+  group_by(
+    Year = year(Date),
+    Quarter = as.factor(quarter(Date)),
+    Month = month(Date, abbr = TRUE, label = TRUE)
+  ) %&gt;% 
+  summarise(
+    `Total Sale` = sum(Sale),
+    .groups = &#39;drop&#39;
+  ) %&gt;% 
+  mutate(
+    `Sale %` = scales::percent(`Total Sale`/sum(`Total Sale`),
+                               accuracy = 1),
+    .by = Year
+  ) %&gt;% 
+  group_split(Year) %&gt;% 
+  map_dfr(janitor::adorn_totals) %&gt;% 
+  mutate(`Sale %` = ifelse(`Sale %` == &quot;-&quot;, &quot;100%&quot;, `Sale %`))</code></pre>
+<pre><code>##   Year Quarter Month Total Sale Sale %
+##   2022       1   Jan      18079     9%
+##   2022       1   Feb      13709     7%
+##   2022       1   Mar      18307     9%
+##   2022       2   Apr      17710     9%
+##   2022       2   May      17878     9%
+##   2022       2   Jun      17000     8%
+##   2022       3   Jul      15997     8%
+##   2022       3   Aug      15473     8%
+##   2022       3   Sep      15273     8%
+##   2022       4   Oct      14963     7%
+##   2022       4   Nov      19080    10%
+##   2022       4   Dec      17171     9%
+##  Total       -     -     200640   100%
+##   2023       1   Jan      17477     9%
+##   2023       1   Feb      12711     6%
+##   2023       1   Mar      16652     8%
+##   2023       2   Apr      16568     8%
+##   2023       2   May      16470     8%
+##   2023       2   Jun      16566     8%
+##   2023       3   Jul      17970     9%
+##   2023       3   Aug      15335     8%
+##   2023       3   Sep      14073     7%
+##   2023       4   Oct      18258     9%
+##   2023       4   Nov      16213     8%
+##   2023       4   Dec      19682    10%
+##  Total       -     -     197975   100%</code></pre>
 </div>
 
 

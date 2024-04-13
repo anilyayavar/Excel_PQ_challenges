@@ -12,5 +12,11 @@ df %>%
 
 df <- read_excel("Excel/Excel_Challenge_433 - Text Split.xlsx", range = cell_cols(LETTERS[1]))
 
-df %>% 
-  separate(Text, into = c("Levels", "Names"), sep = ":") 
+output <- df %>% 
+  separate(Text, into = c("Levels", "Names"), sep = " : ") %>% 
+  separate(Levels, into = paste0("Level", 1:3), sep = "\\.", fill = "right") %>% 
+  separate(Names, into = c("First Name", "Last Name"), sep = " ", fill = "right")
+
+
+result <- read_excel("Excel/Excel_Challenge_433 - Text Split.xlsx", range = cell_cols(LETTERS[3:7]))
+identical(output, result)
