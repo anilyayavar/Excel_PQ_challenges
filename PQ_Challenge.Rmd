@@ -94,3 +94,27 @@ df %>%
   mutate(`Sale %` = ifelse(`Sale %` == "-", "100%", `Sale %`))
 ```
 
+## PQ Challenge 174
+```{r}
+df <- read_xlsx("PQ/PQ_Challenge_174.xlsx", range = cell_cols(LETTERS[1:4]))
+df %>% 
+  clean_names() %>% 
+  pivot_longer(contains("date"), values_to = "dates", names_to = NULL) %>% 
+  mutate(dates = as.Date(dates)) %>% 
+  group_by(emp) %>% 
+  mutate(from_date = floor_date(dates, "month")) %>% 
+  complete(from_date = seq.Date(min(from_date), max(from_date), "month")) %>% 
+  fill(sales) %>% 
+  mutate(from_date = case_when(row_number() == 1 ~ dates,
+                               TRUE ~ from_date),
+         to_date = case_when(row_number() == n() ~ dates,
+                             TRUE ~ ceiling_date(from_date, "month") - days(1))) %>% 
+  select(-dates) %>% 
+  mutate(month_sales = sales * as.numeric(to_date - from_date + 1)/as.numeric(sum(to_date - from_date + 1))) %>% 
+  ungroup() %>% 
+  group_by(emp, Year = year(from_date)) %>% 
+  mutate(running_sales = cumsum(month_sales)) %>% 
+  ungroup() %>% 
+  select(Emp = emp, `From Date` = from_date, `To Date` = to_date, `Monthly Sales` = month_sales, `Running Total` = running_sales)
+```
+

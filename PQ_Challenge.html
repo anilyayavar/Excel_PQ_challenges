@@ -517,6 +517,51 @@ df %&gt;%
 ##   2023       4   Dec      19682    10%
 ##  Total       -     -     197975   100%</code></pre>
 </div>
+<div id="pq-challenge-174" class="section level2">
+<h2>PQ Challenge 174</h2>
+<pre class="r"><code>df &lt;- read_xlsx(&quot;PQ/PQ_Challenge_174.xlsx&quot;, range = cell_cols(LETTERS[1:4]))
+df %&gt;% 
+  clean_names() %&gt;% 
+  pivot_longer(contains(&quot;date&quot;), values_to = &quot;dates&quot;, names_to = NULL) %&gt;% 
+  mutate(dates = as.Date(dates)) %&gt;% 
+  group_by(emp) %&gt;% 
+  mutate(from_date = floor_date(dates, &quot;month&quot;)) %&gt;% 
+  complete(from_date = seq.Date(min(from_date), max(from_date), &quot;month&quot;)) %&gt;% 
+  fill(sales) %&gt;% 
+  mutate(from_date = case_when(row_number() == 1 ~ dates,
+                               TRUE ~ from_date),
+         to_date = case_when(row_number() == n() ~ dates,
+                             TRUE ~ ceiling_date(from_date, &quot;month&quot;) - days(1))) %&gt;% 
+  select(-dates) %&gt;% 
+  mutate(month_sales = sales * as.numeric(to_date - from_date + 1)/as.numeric(sum(to_date - from_date + 1))) %&gt;% 
+  ungroup() %&gt;% 
+  group_by(emp, Year = year(from_date)) %&gt;% 
+  mutate(running_sales = cumsum(month_sales)) %&gt;% 
+  ungroup() %&gt;% 
+  select(Emp = emp, `From Date` = from_date, `To Date` = to_date, `Monthly Sales` = month_sales, `Running Total` = running_sales)</code></pre>
+<pre><code>## # A tibble: 19 × 5
+##    Emp   `From Date` `To Date`  `Monthly Sales` `Running Total`
+##    &lt;chr&gt; &lt;date&gt;      &lt;date&gt;               &lt;dbl&gt;           &lt;dbl&gt;
+##  1 A     2023-01-03  2023-01-31          407.             407. 
+##  2 A     2023-02-01  2023-02-28          393.             800  
+##  3 B     2023-01-15  2023-01-31          121.             121. 
+##  4 B     2023-02-01  2023-02-28          200.             321. 
+##  5 B     2023-03-01  2023-03-31          221.             542. 
+##  6 B     2023-04-01  2023-04-20          142.             684  
+##  7 C     2023-02-03  2023-02-28          197.             197. 
+##  8 C     2023-03-01  2023-03-31          235.             433. 
+##  9 C     2023-04-01  2023-04-30          228.             660. 
+## 10 C     2023-05-01  2023-05-31          235.             895. 
+## 11 C     2023-06-01  2023-06-01            7.59           903  
+## 12 D     2023-08-29  2023-08-31           16.1             16.1
+## 13 D     2023-09-01  2023-09-30          161.             177. 
+## 14 D     2023-10-01  2023-10-31          166.             344. 
+## 15 D     2023-11-01  2023-11-30          161.             505. 
+## 16 D     2023-12-01  2023-12-31          166.             671. 
+## 17 D     2024-01-01  2024-01-31          166.             166. 
+## 18 D     2024-02-01  2024-02-29          156.             322. 
+## 19 D     2024-03-01  2024-03-12           64.4            387.</code></pre>
+</div>
 
 
 
