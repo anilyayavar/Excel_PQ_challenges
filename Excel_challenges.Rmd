@@ -10,6 +10,39 @@ library(readxl)
 library(janitor)
 ```
 
+## Excel Challenge 435: Draw a boat
+Using `ggplot2` here just for fun.
+```{r}
+map(c(0:7, 11:8),
+    ~ 12 + seq(-1 * (.x ), .x, by = 1)) %>% 
+  imap_dfr(~ .x %>% 
+        as_tibble() %>% 
+        set_names("col") %>% 
+        mutate(row = .y)) %>% 
+  mutate(shape = case_when(
+    row %in% 1:7 ~ "A",
+    row == 8 ~ "B",
+    TRUE ~ "C"
+  )) %>% 
+  ggplot(aes(col, row)) +
+  geom_point(aes(shape = shape)) +
+  scale_y_reverse() +
+  scale_shape_manual(values = c(3, 61, 4)) +
+  theme_void() +
+  theme(legend.position = "none")
+```
+
+
+## Excel Challenge 434: Generating Excel column names matrix
+```{r}
+n <- 100
+
+{cumsum(seq(n)) - seq(n) + 1} |> 
+  cellranger::num_to_letter() |>
+  matrix(nrow=20)
+```
+
+
 ## Excel Challenge 433: parsing the file/data
 ```{r}
 df <- read_excel("Excel/Excel_Challenge_433 - Text Split.xlsx", range = cell_cols(LETTERS[1]))
@@ -59,7 +92,7 @@ df %>%
   summarise(Regions = str_c(Region, collapse = ", "))
 ```
 
-## Excel Challenge 430
+## Excel Challenge 430: Flashlight
 
 ```{r}
 map_dfr(1:26,

@@ -376,13 +376,63 @@ library(janitor)</code></pre>
 ## The following objects are masked from &#39;package:stats&#39;:
 ## 
 ##     chisq.test, fisher.test</code></pre>
+<div id="excel-challenge-435-draw-a-boat" class="section level2">
+<h2>Excel Challenge 435: Draw a boat</h2>
+<p>Using <code>ggplot2</code> here just for fun.</p>
+<pre class="r"><code>map(c(0:7, 11:8),
+    ~ 12 + seq(-1 * (.x ), .x, by = 1)) %&gt;% 
+  imap_dfr(~ .x %&gt;% 
+        as_tibble() %&gt;% 
+        set_names(&quot;col&quot;) %&gt;% 
+        mutate(row = .y)) %&gt;% 
+  mutate(shape = case_when(
+    row %in% 1:7 ~ &quot;A&quot;,
+    row == 8 ~ &quot;B&quot;,
+    TRUE ~ &quot;C&quot;
+  )) %&gt;% 
+  ggplot(aes(col, row)) +
+  geom_point(aes(shape = shape)) +
+  scale_y_reverse() +
+  scale_shape_manual(values = c(3, 61, 4)) +
+  theme_void() +
+  theme(legend.position = &quot;none&quot;)</code></pre>
+<p><img src="data:image/png;base64,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" width="672" /></p>
+</div>
+<div id="excel-challenge-434-generating-excel-column-names-matrix" class="section level2">
+<h2>Excel Challenge 434: Generating Excel column names matrix</h2>
+<pre class="r"><code>n &lt;- 100
+
+{cumsum(seq(n)) - seq(n) + 1} |&gt; 
+  cellranger::num_to_letter() |&gt;
+  matrix(nrow=20)</code></pre>
+<pre><code>##       [,1] [,2]  [,3]  [,4]  [,5] 
+##  [1,] &quot;A&quot;  &quot;HC&quot;  &quot;AEO&quot; &quot;BRK&quot; &quot;DTQ&quot;
+##  [2,] &quot;B&quot;  &quot;HX&quot;  &quot;AGD&quot; &quot;BTT&quot; &quot;DWT&quot;
+##  [3,] &quot;D&quot;  &quot;IT&quot;  &quot;AHT&quot; &quot;BWD&quot; &quot;DZX&quot;
+##  [4,] &quot;G&quot;  &quot;JQ&quot;  &quot;AJK&quot; &quot;BYO&quot; &quot;EDC&quot;
+##  [5,] &quot;K&quot;  &quot;KO&quot;  &quot;ALC&quot; &quot;CBA&quot; &quot;EGI&quot;
+##  [6,] &quot;P&quot;  &quot;LN&quot;  &quot;AMV&quot; &quot;CDN&quot; &quot;EJP&quot;
+##  [7,] &quot;V&quot;  &quot;MN&quot;  &quot;AOP&quot; &quot;CGB&quot; &quot;EMX&quot;
+##  [8,] &quot;AC&quot; &quot;NO&quot;  &quot;AQK&quot; &quot;CIQ&quot; &quot;EQG&quot;
+##  [9,] &quot;AK&quot; &quot;OQ&quot;  &quot;ASG&quot; &quot;CLG&quot; &quot;ETQ&quot;
+## [10,] &quot;AT&quot; &quot;PT&quot;  &quot;AUD&quot; &quot;CNX&quot; &quot;EXB&quot;
+## [11,] &quot;BD&quot; &quot;QX&quot;  &quot;AWB&quot; &quot;CQP&quot; &quot;FAN&quot;
+## [12,] &quot;BO&quot; &quot;SC&quot;  &quot;AYA&quot; &quot;CTI&quot; &quot;FEA&quot;
+## [13,] &quot;CA&quot; &quot;TI&quot;  &quot;BAA&quot; &quot;CWC&quot; &quot;FHO&quot;
+## [14,] &quot;CN&quot; &quot;UP&quot;  &quot;BCB&quot; &quot;CYX&quot; &quot;FLD&quot;
+## [15,] &quot;DB&quot; &quot;VX&quot;  &quot;BED&quot; &quot;DBT&quot; &quot;FOT&quot;
+## [16,] &quot;DQ&quot; &quot;XG&quot;  &quot;BGG&quot; &quot;DEQ&quot; &quot;FSK&quot;
+## [17,] &quot;EG&quot; &quot;YQ&quot;  &quot;BIK&quot; &quot;DHO&quot; &quot;FWC&quot;
+## [18,] &quot;EX&quot; &quot;AAB&quot; &quot;BKP&quot; &quot;DKN&quot; &quot;FZV&quot;
+## [19,] &quot;FP&quot; &quot;ABN&quot; &quot;BMV&quot; &quot;DNN&quot; &quot;GDP&quot;
+## [20,] &quot;GI&quot; &quot;ADA&quot; &quot;BPC&quot; &quot;DQO&quot; &quot;GHK&quot;</code></pre>
+</div>
 <div id="excel-challenge-433-parsing-the-filedata" class="section level2">
 <h2>Excel Challenge 433: parsing the file/data</h2>
 <pre class="r"><code>df &lt;- read_excel(&quot;Excel/Excel_Challenge_433 - Text Split.xlsx&quot;, range = cell_cols(LETTERS[1]))
 
 df %&gt;% 
-  separate(Text, into = c(&quot;Levels&quot;, &quot;Names&quot;), sep = &quot;:&quot;) %&gt;% 
-  mutate(across(everything(), str_squish)) %&gt;% 
+  separate(Text, into = c(&quot;Levels&quot;, &quot;Names&quot;), sep = &quot; : &quot;) %&gt;% 
   separate(Levels, into = paste0(&quot;Level&quot;, 1:3), sep = &quot;\\.&quot;, fill = &quot;right&quot;) %&gt;% 
   separate(Names, into = c(&quot;First Name&quot;, &quot;Last Name&quot;), sep = &quot; &quot;, fill = &quot;right&quot;)</code></pre>
 <pre><code>## # A tibble: 19 × 5
@@ -448,8 +498,8 @@ df %&gt;%
 ## 2     2 Region19                  
 ## 3     3 Region15, Region18</code></pre>
 </div>
-<div id="excel-challenge-430" class="section level2">
-<h2>Excel Challenge 430</h2>
+<div id="excel-challenge-430-flashlight" class="section level2">
+<h2>Excel Challenge 430: Flashlight</h2>
 <pre class="r"><code>map_dfr(1:26,
     ~ seq(from = 2*.x -1, length.out = 27 - .x) %&gt;% 
       as_tibble() %&gt;% 
