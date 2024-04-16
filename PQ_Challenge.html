@@ -379,6 +379,35 @@ library(tidyverse)</code></pre>
 ## 
 ##     chisq.test, fisher.test</code></pre>
 </div>
+<div id="pq-challenge-164" class="section level2">
+<h2>PQ Challenge 164</h2>
+<pre class="r"><code>df &lt;- read_xlsx(&quot;PQ/PQ_Challenge_164.xlsx&quot;, range = cell_cols(LETTERS[1:5])) 
+df %&gt;% 
+  pivot_longer(-Group, names_pattern = &quot;([A-z]+)(\\d+)&quot;, names_to = c(&quot;.value&quot;, &quot;num&quot;)) %&gt;% 
+  separate(Number, into = c(&quot;Type&quot;, &quot;Code&quot;), sep = 2) %&gt;% 
+  select(-num)</code></pre>
+<pre><code>## # A tibble: 12 × 4
+##    Group Type  Code  Value
+##    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;
+##  1 A     AB    01       16
+##  2 A     DF    02       91
+##  3 B     AB    01       33
+##  4 B     CD    02       41
+##  5 B     DE    03       13
+##  6 B     GH    09       19
+##  7 B     RT    04       43
+##  8 B     AC    12       40
+##  9 C     FG    34       90
+## 10 C     HJ    23       97
+## 11 C     AL    33       69
+## 12 C     QW    84       22</code></pre>
+</div>
+<div id="pq-challenge-165" class="section level2">
+<h2>PQ Challenge 165</h2>
+</div>
+<div id="pq-challenge-166" class="section level2">
+<h2>PQ Challenge 166</h2>
+</div>
 <div id="pq-challenge-167" class="section level2">
 <h2>PQ Challenge 167</h2>
 <pre class="r"><code>df &lt;- read_xlsx(&quot;PQ/Power_Query_Challenge_167.xlsx&quot;, range = cell_cols(LETTERS[1:4]))

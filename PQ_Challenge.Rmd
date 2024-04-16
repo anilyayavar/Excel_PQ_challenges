@@ -11,6 +11,21 @@ library(tidyverse)
 library(janitor)
 ```
 
+## PQ Challenge 164
+```{r}
+df <- read_xlsx("PQ/PQ_Challenge_164.xlsx", range = cell_cols(LETTERS[1:5])) 
+df %>% 
+  pivot_longer(-Group, names_pattern = "([A-z]+)(\\d+)", names_to = c(".value", "num")) %>% 
+  separate(Number, into = c("Type", "Code"), sep = 2) %>% 
+  select(-num)
+```
+
+
+## PQ Challenge 165
+
+## PQ Challenge 166
+
+
 ## PQ Challenge 167
 ```{r}
 df <- read_xlsx("PQ/Power_Query_Challenge_167.xlsx", range = cell_cols(LETTERS[1:4]))
