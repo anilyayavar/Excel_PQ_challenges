@@ -1,48 +1,21 @@
-library(readxl)
 library(janitor)
+library(readxl)
 library(tidyverse)
 
-df <- read_xlsx("PQ/PQ_Challenge_173.xlsx", range = cell_cols(LETTERS[1:2]))
+df <- read_xlsx("PQ/Power_Query_Challenge_167.xlsx", range = cell_cols(LETTERS[1:4]))
 
 df %>% 
-  group_by(
-    Year = as.factor(year(Date)),
-    Quarter = as.factor(quarter(Date)),
-    Month = month(Date, abbr = TRUE, label = TRUE)
-  ) %>% 
-  summarise(
-    `Total Sale` = sum(Sale),
-    .groups = 'drop'
-  ) %>% 
-  mutate(
-    `Sale %` = scales::percent(`Total Sale`/sum(`Total Sale`),
-                               accuracy = 1),
-    .by = Year
-  ) %>% 
-  group_split(Year) %>% 
+  clean_names() %>% 
+  group_by(dummy = cumsum(!is.na(as.integer(camp_no)))) %>% 
+  group_split(.keep = FALSE) %>% 
   map_dfr(~ .x %>% 
-            mutate(across(Year:Quarter, ~ifelse(
-              lag(consecutive_id(.), default = 0) == consecutive_id(.),
-              NA,
-              .
-            ))) %>% 
-            janitor::adorn_totals()) %>% 
-  mutate(`Sale %` = ifelse(`Sale %` == "-", "100%", `Sale %`))
+         mutate(camp_no = camp_no[1],
+                name = vaccine,
+                vaccine = vaccine[1]) %>% 
+        filter(row_number() != 1)) %>% 
+  mutate(notification_date = "Yes") %>% 
+  complete(camp_no, name, fill = list(notification_date = "No")) %>% 
+  fill(vaccine, .direction = "down") 
 
 
-df %>% 
-  group_by(
-    Year = as.factor(year(Date)),
-    Quarter = as.factor(quarter(Date)),
-    Month = month(Date, abbr = TRUE, label = TRUE)
-  ) %>% 
-  summarise(
-    `Total Sale` = sum(Sale),
-    .groups = 'drop'
-  ) %>% 
-  mutate(
-    `Sale %` = scales::percent(`Total Sale`/sum(`Total Sale`),
-                               accuracy = 1),
-    .by = Year
-  ) %>% 
-  
+?fill

@@ -11,6 +11,47 @@ library(tidyverse)
 library(janitor)
 ```
 
+## PQ Challenge 167
+```{r}
+df <- read_xlsx("PQ/Power_Query_Challenge_167.xlsx", range = cell_cols(LETTERS[1:4]))
+
+output <- df %>% 
+  clean_names() %>% 
+  group_by(dummy = cumsum(!is.na(as.integer(camp_no)))) %>% 
+  group_split(.keep = FALSE) %>% 
+  map_dfr(~ .x %>% 
+         mutate(camp_no = camp_no[1],
+                name = vaccine,
+                vaccine = vaccine[1]) %>% 
+        filter(row_number() != 1)) %>% 
+  mutate(Notified = "Yes",
+         Administered = ifelse(is.na(administration_date), "No", "Yes")) %>% 
+  select(-ends_with("date")) %>% 
+  complete(camp_no, name, fill = list(Notified = "No")) %>% 
+  fill(vaccine, .direction = "down") %>% 
+  mutate(camp_no = as.double(row_number()),
+         .by = vaccine) %>% 
+  relocate(vaccine, .after = camp_no) %>% 
+  rename(`Camp No` = camp_no, Name = name, Vaccine = vaccine)
+
+output
+
+result <- read_xlsx("PQ/Power_Query_Challenge_167.xlsx", 
+                    range = cell_cols(LETTERS[7:11]), 
+                    na = "NA") 
+identical(result, output)
+```
+
+
+## PQ Challenge 168
+```{r}
+df <- read_xlsx("PQ/Power_Query_Challenge_168.xlsx", range = cell_cols(LETTERS[1:2]))
+
+df %>% 
+  mutate(Item = accumulate(sort(Item), ~ paste(.x, .y, sep = "/") ),
+         .by = Store)
+```
+
 
 ## PQ Challenge 169: Extract specific strings
 It combines both lookahead and lookbehind in one string
