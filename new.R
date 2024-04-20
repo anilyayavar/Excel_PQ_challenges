@@ -2,20 +2,42 @@ library(janitor)
 library(readxl)
 library(tidyverse)
 
-df <- read_xlsx("PQ/Power_Query_Challenge_167.xlsx", range = cell_cols(LETTERS[1:4]))
-
+df <- read_xlsx("PQ/PQ_Challenge_164.xlsx", range = cell_cols(LETTERS[1:5])) 
 df %>% 
-  clean_names() %>% 
-  group_by(dummy = cumsum(!is.na(as.integer(camp_no)))) %>% 
-  group_split(.keep = FALSE) %>% 
-  map_dfr(~ .x %>% 
-         mutate(camp_no = camp_no[1],
-                name = vaccine,
-                vaccine = vaccine[1]) %>% 
-        filter(row_number() != 1)) %>% 
-  mutate(notification_date = "Yes") %>% 
-  complete(camp_no, name, fill = list(notification_date = "No")) %>% 
-  fill(vaccine, .direction = "down") 
+  pivot_longer(-Group, names_pattern = "([A-z]+)(\\d+)", names_to = c(".value", "num")) %>% 
+  separate(Number, into = c("Type", "Code"), sep = 2) %>% 
+  select(-num)
 
 
-?fill
+bifid <- function(WORD, KEY = "ROSE"){
+  mat <- KEY %>% 
+    toupper() %>% 
+    str_split("") %>% 
+    unlist() %>% 
+    unique() %>% 
+    {c(., subset(LETTERS, !LETTERS %in% c(., "J")))} %>% 
+    matrix(nrow=5, byrow = TRUE)
+  
+  str_split(WORD, "")  %>% 
+    unlist() %>% 
+    map(~ which(mat == .x, arr.ind = TRUE) %>% as.vector()) %>% 
+    unlist() %>% 
+    matrix(ncol = 2, byrow = TRUE) %>% 
+    as.vector() %>% 
+    split.default(., ((seq_along(.) - 1) %/% 2) + 1 ) %>% 
+    map_chr(~mat[.x[1], .x[2]]) %>% 
+    str_c(collapse = "")
+}
+
+bifid("BATTLE", "ROTORS")
+
+
+"ROSE" %>% 
+  toupper() %>% 
+  str_split("") %>% 
+  unlist() %>% 
+  {c(., subset(LETTERS, !LETTERS %in% c(., "J")))} %>% 
+  matrix(nrow=5, byrow = TRUE)
+
+
+
