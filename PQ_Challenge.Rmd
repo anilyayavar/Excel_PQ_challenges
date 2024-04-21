@@ -193,3 +193,16 @@ df %>%
 
 ```
 
+## PQ Challenge 176
+```{r}
+df <- read_xlsx("PQ/PQ_Challenge_176.xlsx", range = cell_cols(LETTERS[1:3]))
+
+df %>% 
+  separate_wider_delim(cols = starts_with("Column"), delim = ", ", names_sep = "_", too_few = "align_start") %>% 
+  pivot_longer(cols = -Group, names_sep = "_", names_to = c(".value", "Name"), values_transform = list(Column2 = as.integer)) %>% 
+  select(-Name) %>% 
+  filter(!is.na(Column1) | !is.na(Column1)) %>% 
+  mutate(Column2 = cumsum(coalesce(Column2, 0)),
+         .by = Group)
+```
+

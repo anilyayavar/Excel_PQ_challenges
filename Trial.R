@@ -2,6 +2,25 @@ library(readxl)
 library(janitor)
 library(tidyverse)
 
+df <- read_xlsx("PQ/PQ_Challenge_175.xlsx", range = cell_cols(LETTERS[1:3])) %>% 
+  clean_names()
+
+df %>% 
+  inner_join(
+    df,
+    by = join_by(family == family, closest(generation_no < generation_no)),
+    suffix = c("", "_next")
+  ) %>% 
+  rename(next_generation = name_next) %>% 
+  unite("relationship", starts_with("generation_no"), remove = TRUE, sep = " - ") %>% 
+  relocate(relationship, .after = next_generation) %>% 
+  arrange(family, relationship, name, next_generation)
+  
+
+
+
+
+
 grades <- data.frame(
   grade = c("C", "B", "A", "A+"),
   rank = 1:4

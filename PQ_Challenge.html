@@ -699,6 +699,29 @@ df %&gt;%
 ## 17 Nicholas Young  Robert          2 - 3       
 ## 18 Nicole   Young  Robert          2 - 3</code></pre>
 </div>
+<div id="pq-challenge-176" class="section level2">
+<h2>PQ Challenge 176</h2>
+<pre class="r"><code>df &lt;- read_xlsx(&quot;PQ/PQ_Challenge_176.xlsx&quot;, range = cell_cols(LETTERS[1:3]))
+
+df %&gt;% 
+  separate_wider_delim(cols = starts_with(&quot;Column&quot;), delim = &quot;, &quot;, names_sep = &quot;_&quot;, too_few = &quot;align_start&quot;) %&gt;% 
+  pivot_longer(cols = -Group, names_sep = &quot;_&quot;, names_to = c(&quot;.value&quot;, &quot;Name&quot;), values_transform = list(Column2 = as.integer)) %&gt;% 
+  select(-Name) %&gt;% 
+  filter(!is.na(Column1) | !is.na(Column1)) %&gt;% 
+  mutate(Column2 = cumsum(coalesce(Column2, 0)),
+         .by = Group)</code></pre>
+<pre><code>## # A tibble: 8 × 3
+##   Group Column1 Column2
+##   &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
+## 1     1 a             3
+## 2     1 b            11
+## 3     2 c             1
+## 4     2 d            10
+## 5     2 f            10
+## 6     3 g             4
+## 7     4 h            12
+## 8     4 j            68</code></pre>
+</div>
 
 
 
