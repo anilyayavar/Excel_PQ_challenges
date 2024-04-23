@@ -10,6 +10,19 @@ library(readxl)
 library(janitor)
 ```
 
+## Excel Challenge 440
+List the numbers between 1 to 100 which can be expressed as sum of two perfect squares of natural numbers (natural numbers don't include `0`).
+Ex. `5` which can be expressed as `1^2 + 2^2`.
+```{r}
+(1:10)^2 |>   
+  combn(2) |>   
+  colSums() |>   
+  unique() |>
+  sort() |>   
+  {\(.x) .x[.x <= 100]}()
+```
+
+
 ## Excel Challenge 435: Draw a boat
 Using `ggplot2` here just for fun.
 ```{r}
