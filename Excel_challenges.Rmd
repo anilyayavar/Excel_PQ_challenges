@@ -10,6 +10,33 @@ library(readxl)
 library(janitor)
 ```
 
+## Excel Challenge 443
+```{r}
+mat <- read_xlsx("Excel/Excel_Challenge_443 - Birds Search.xlsx",
+                 range = "B2:K11",
+                 col_names = FALSE) %>%
+  as.matrix()
+
+birds <- read_xlsx("Excel/Excel_Challenge_443 - Birds Search.xlsx", 
+                   range = cell_cols("M"))
+
+paste0(t(mat), collapse = "") %>% 
+  str_replace_all(
+    birds %>% 
+      mutate(rep_c = map_chr(Birds, ~str_c(rep("X", nchar(.x)), collapse = ""))) %>% 
+      tibble::deframe()
+  ) %>% 
+  str_split("") %>% 
+  unlist() %>% 
+  matrix(nrow=nrow(mat), byrow = TRUE) %>% 
+  # alternative
+  # {`[<-`(mat, mat == ., "x")}
+  {replace(mat, mat == ., "x")} 
+
+```
+
+
+
 ## Excel Challenge 442
 ```{r}
 cipher <- function(key, MSG){
