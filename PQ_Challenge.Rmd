@@ -206,3 +206,13 @@ df %>%
          .by = Group)
 ```
 
+## PQ Challenge 178
+```{r}
+df <- read_xlsx("PQ/PQ_Challenge_178.xlsx", range = cell_cols(LETTERS[1:5])) %>% 
+  clean_names(case = "title")
+
+df |> 
+  pivot_longer(-Emp, names_to = c(".value", "Change"), names_sep = " ") |> 
+  na.omit()
+```
+

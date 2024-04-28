@@ -722,6 +722,22 @@ df %&gt;%
 ## 7     4 h            12
 ## 8     4 j            68</code></pre>
 </div>
+<div id="pq-challenge-178" class="section level2">
+<h2>PQ Challenge 178</h2>
+<pre class="r"><code>df &lt;- read_xlsx(&quot;PQ/PQ_Challenge_178.xlsx&quot;, range = cell_cols(LETTERS[1:5])) %&gt;% 
+  clean_names(case = &quot;title&quot;)
+
+df |&gt; 
+  pivot_longer(-Emp, names_to = c(&quot;.value&quot;, &quot;Change&quot;), names_sep = &quot; &quot;) |&gt; 
+  na.omit()</code></pre>
+<pre><code>## # A tibble: 4 × 4
+##   Emp    Change Old      New      
+##   &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt;    
+## 1 Lisa   Role   Asst     Head     
+## 2 Lisa   Org    A        B        
+## 3 George Role   SalesMan SalesHead
+## 4 Smith  Org    P        Q</code></pre>
+</div>
 
 
 
