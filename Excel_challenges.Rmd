@@ -12,19 +12,36 @@ library(janitor)
 
 ## Excel Challenge 444
 ```{r}
+# Creating given problem
 data.frame(
   Numbers = c(1, 8, 41)
 ) %>% 
+  # Creating New column for desired Sequence
   mutate(`Answer Expected` = map_chr(Numbers, .f = \(.a) {
+    # Using purrr::accumulate
     accumulate(1:4, ~ .x %>% 
+                 # split all digits into single digits
                  str_split("") %>% 
+                 # unlist the above output
                  unlist() %>% 
+                 # generate a frequency table
+                 # as well as sort it on the basis of
+                 # digits available in given number
                  {table(.)[unique(.)]} %>% 
+                 # this will create a data frame of above table
                  tibble::enframe() %>% 
+                 # interleave both columns
                  {c(rbind(.$value, .$name))} %>% 
+                 # Paste the string back together
                  str_c(collapse = ""),
-               .init = .a)[-1] %>% 
+               # Take initial value for purrr::accumalate as the given number
+               .init = .a
+               # Remove first result from the output
+               # which will be same as given first number
+               )[-1] %>% 
+      # Unlist the sequence digits (from the output list)
       unlist() %>% 
+      # Collapse them back
       str_c(collapse = ", ")
   }))
 ```
