@@ -2,6 +2,20 @@ library(readxl)
 library(janitor)
 library(tidyverse)
 
+
+df <- read_xlsx("Others/Easy Excel Challenge 28th April.xlsx", range = "B2:D6")
+
+df |> 
+  group_by(Month) |> 
+  group_split(.keep = TRUE) |> 
+  map_dfr(~ .x |> 
+        separate_rows(-Month, convert = TRUE) |> 
+        adorn_totals(name = paste("Total", first(.$Month))))
+
+
+
+
+
 df <- read_xlsx("PQ/PQ_Challenge_175.xlsx", range = cell_cols(LETTERS[1:3])) %>% 
   clean_names()
 

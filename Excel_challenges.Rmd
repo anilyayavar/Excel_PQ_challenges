@@ -10,6 +10,27 @@ library(readxl)
 library(janitor)
 ```
 
+## Excel Challenge 444
+```{r}
+data.frame(
+  Numbers = c(1, 8, 41)
+) %>% 
+  mutate(`Answer Expected` = map_chr(Numbers, .f = \(.a) {
+    accumulate(1:4, ~ .x %>% 
+                 str_split("") %>% 
+                 unlist() %>% 
+                 {table(.)[unique(.)]} %>% 
+                 tibble::enframe() %>% 
+                 {c(rbind(.$value, .$name))} %>% 
+                 str_c(collapse = ""),
+               .init = .a)[-1] %>% 
+      unlist() %>% 
+      str_c(collapse = ", ")
+  }))
+```
+
+
+
 ## Excel Challenge 443
 ```{r}
 mat <- read_xlsx("Excel/Excel_Challenge_443 - Birds Search.xlsx",

@@ -376,6 +376,28 @@ library(janitor)</code></pre>
 ## The following objects are masked from &#39;package:stats&#39;:
 ## 
 ##     chisq.test, fisher.test</code></pre>
+<div id="excel-challenge-444" class="section level2">
+<h2>Excel Challenge 444</h2>
+<pre class="r"><code>data.frame(
+  Numbers = c(1, 8, 41)
+) %&gt;% 
+  mutate(`Answer Expected` = map_chr(Numbers, .f = \(.a) {
+    accumulate(1:4, ~ .x %&gt;% 
+                 str_split(&quot;&quot;) %&gt;% 
+                 unlist() %&gt;% 
+                 {table(.)[unique(.)]} %&gt;% 
+                 tibble::enframe() %&gt;% 
+                 {c(rbind(.$value, .$name))} %&gt;% 
+                 str_c(collapse = &quot;&quot;),
+               .init = .a)[-1] %&gt;% 
+      unlist() %&gt;% 
+      str_c(collapse = &quot;, &quot;)
+  }))</code></pre>
+<pre><code>##   Numbers              Answer Expected
+## 1       1           11, 21, 1211, 3112
+## 2       8       18, 1118, 3118, 132118
+## 3      41 1411, 3114, 132114, 31131214</code></pre>
+</div>
 <div id="excel-challenge-443" class="section level2">
 <h2>Excel Challenge 443</h2>
 <pre class="r"><code>mat &lt;- read_xlsx(&quot;Excel/Excel_Challenge_443 - Birds Search.xlsx&quot;,
@@ -405,6 +427,8 @@ paste0(t(mat), collapse = &quot;&quot;) %&gt;%
   str_split(&quot;&quot;) %&gt;% 
   unlist() %&gt;% 
   matrix(nrow=nrow(mat), byrow = TRUE) %&gt;% 
+  # alternative
+  # {`[&lt;-`(mat, mat == ., &quot;x&quot;)}
   {replace(mat, mat == ., &quot;x&quot;)} </code></pre>
 <pre><code>##       ...1 ...2 ...3 ...4 ...5 ...6 ...7 ...8 ...9 ...10
 ##  [1,] &quot;x&quot;  &quot;x&quot;  &quot;x&quot;  &quot;x&quot;  &quot;x&quot;  &quot;x&quot;  &quot;x&quot;  &quot;x&quot;  &quot;x&quot;  &quot;x&quot;  
