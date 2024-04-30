@@ -10,6 +10,48 @@ library(readxl)
 library(janitor)
 ```
 
+## Excel Challenge 445 (444 - 30th April 2024)
+```{r}
+c(
+  list(0),
+  rep(list(c(-0.5, 0.5)), 5),
+  rep(list(-2:2), 3),
+  rep(list(-3:3), 3),
+  rep(list(-4:4), 3),
+  list(c(-6:-3, 3:6)),
+  list(c(-8:-5, 5:8)),
+  list(-10:10),
+  list(c(-11:-6, 6:11)),
+  list(c(-15:-8, 8:15))
+) %>%
+  map_dfr( ~ setNames(.x, paste0("V_", seq_along(.x)))) %>%
+  mutate(col = row_number()) %>%
+  pivot_longer(
+    -col,
+    names_sep = "_",
+    names_to = c(".value", "row"),
+    names_transform = list(row = as.integer)
+  ) %>%
+  na.omit() %>%
+  mutate(
+    shape = case_match(col,
+                       1 ~ "A",
+                       3 ~ "B",
+                       2 ~ "C",
+                       .default = "D"),
+    shape = ifelse(row == 2 & col == 2, "E", shape)
+  ) %>%
+  ggplot(aes(V, col, shape = shape)) +
+  geom_point(size = 4) +
+  scale_y_reverse() +
+  scale_shape_manual(values = c(A = 73, B = 48, C = 47, D = 4, E = 92)) +
+  theme_void() +
+  theme(legend.position = "none")
+```
+
+
+
+
 ## Excel Challenge 444
 ```{r}
 # Creating given problem
