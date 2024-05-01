@@ -10,6 +10,27 @@ library(readxl)
 library(janitor)
 ```
 
+## Excel Challenge 446
+```{r}
+library(igraph)
+
+adj_df <- read_xlsx("Excel/Excel_Challenge_446 - Top 3 Min Distance.xlsx", range = cell_cols(LETTERS[1:8]))
+adj_df %>% 
+  column_to_rownames("Cities") %>% 
+  as.matrix() %>% 
+  graph_from_adjacency_matrix(weighted = TRUE) %>% 
+  igraph::as_data_frame() %>% 
+  rename(Distance = weight) %>% 
+  mutate(from_city = pmin(from, to),
+         to_city = pmax(from, to), .before = Distance) %>% 
+  select(-from, -to) %>% 
+  distinct() %>% 
+  slice_min(n = 3, order_by = Distance) %>% 
+  mutate(Rank = dense_rank(Distance), .before = 1) %>% 
+  rename_with(.fn = ~janitor::make_clean_names(.x, case = "title"))
+```
+
+
 ## Excel Challenge 445 (444 - 30th April 2024)
 ```{r}
 c(

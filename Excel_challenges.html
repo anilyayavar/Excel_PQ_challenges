@@ -376,6 +376,52 @@ library(janitor)</code></pre>
 ## The following objects are masked from &#39;package:stats&#39;:
 ## 
 ##     chisq.test, fisher.test</code></pre>
+<div id="excel-challenge-446" class="section level2">
+<h2>Excel Challenge 446</h2>
+<pre class="r"><code>library(igraph)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;igraph&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:lubridate&#39;:
+## 
+##     %--%, union</code></pre>
+<pre><code>## The following objects are masked from &#39;package:dplyr&#39;:
+## 
+##     as_data_frame, groups, union</code></pre>
+<pre><code>## The following objects are masked from &#39;package:purrr&#39;:
+## 
+##     compose, simplify</code></pre>
+<pre><code>## The following object is masked from &#39;package:tidyr&#39;:
+## 
+##     crossing</code></pre>
+<pre><code>## The following object is masked from &#39;package:tibble&#39;:
+## 
+##     as_data_frame</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     decompose, spectrum</code></pre>
+<pre><code>## The following object is masked from &#39;package:base&#39;:
+## 
+##     union</code></pre>
+<pre class="r"><code>adj_df &lt;- read_xlsx(&quot;Excel/Excel_Challenge_446 - Top 3 Min Distance.xlsx&quot;, range = cell_cols(LETTERS[1:8]))
+adj_df %&gt;% 
+  column_to_rownames(&quot;Cities&quot;) %&gt;% 
+  as.matrix() %&gt;% 
+  graph_from_adjacency_matrix(weighted = TRUE) %&gt;% 
+  igraph::as_data_frame() %&gt;% 
+  rename(Distance = weight) %&gt;% 
+  mutate(from_city = pmin(from, to),
+         to_city = pmax(from, to), .before = Distance) %&gt;% 
+  select(-from, -to) %&gt;% 
+  distinct() %&gt;% 
+  slice_min(n = 3, order_by = Distance) %&gt;% 
+  mutate(Rank = dense_rank(Distance), .before = 1) %&gt;% 
+  rename_with(.fn = ~janitor::make_clean_names(.x, case = &quot;title&quot;))</code></pre>
+<pre><code>##   Rank From City To City Distance
+## 1    1     Delhi   Tokyo    17.12
+## 2    2   Jakarta   Tokyo    20.40
+## 3    3     Dhaka   Tokyo    24.35
+## 4    3   Jakarta  Moscow    24.35</code></pre>
+</div>
 <div id="excel-challenge-445-444---30th-april-2024" class="section level2">
 <h2>Excel Challenge 445 (444 - 30th April 2024)</h2>
 <pre class="r"><code>c(
