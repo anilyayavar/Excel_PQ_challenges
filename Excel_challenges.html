@@ -406,9 +406,8 @@ library(janitor)</code></pre>
 adj_df %&gt;% 
   column_to_rownames(&quot;Cities&quot;) %&gt;% 
   as.matrix() %&gt;% 
-  graph_from_adjacency_matrix(weighted = TRUE) %&gt;% 
+  graph_from_adjacency_matrix(weighted = &quot;Distance&quot;) %&gt;% 
   igraph::as_data_frame() %&gt;% 
-  rename(Distance = weight) %&gt;% 
   mutate(from_city = pmin(from, to),
          to_city = pmax(from, to), .before = Distance) %&gt;% 
   select(-from, -to) %&gt;% 

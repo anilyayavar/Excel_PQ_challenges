@@ -18,9 +18,8 @@ adj_df <- read_xlsx("Excel/Excel_Challenge_446 - Top 3 Min Distance.xlsx", range
 adj_df %>% 
   column_to_rownames("Cities") %>% 
   as.matrix() %>% 
-  graph_from_adjacency_matrix(weighted = TRUE) %>% 
+  graph_from_adjacency_matrix(weighted = "Distance") %>% 
   igraph::as_data_frame() %>% 
-  rename(Distance = weight) %>% 
   mutate(from_city = pmin(from, to),
          to_city = pmax(from, to), .before = Distance) %>% 
   select(-from, -to) %>% 
