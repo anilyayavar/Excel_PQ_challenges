@@ -738,6 +738,57 @@ df |&gt;
 ## 3 George Role   SalesMan SalesHead
 ## 4 Smith  Org    P        Q</code></pre>
 </div>
+<div id="pq-challenge-180" class="section level2">
+<h2>PQ Challenge 180</h2>
+<pre class="r"><code>df &lt;- read_xlsx(&quot;PQ/PQ_Challenge_180.xlsx&quot;, range = cell_cols(LETTERS[1:2])) %&gt;% 
+  clean_names()
+
+## Approach-1
+df %&gt;% 
+  mutate(emp = case_match(sales, NA ~ emp_month)) %&gt;% 
+  fill(emp, .direction = &quot;down&quot;) %&gt;% 
+  na.omit() %&gt;% 
+  summarise(
+    total_sales = sum(sales),
+    max_sales_change = max(abs(diff(c(NA, sales))), na.rm = TRUE),
+    from_to_month = paste(lag(emp_month), 
+                          emp_month, 
+                          sep = &quot; - &quot;)[coalesce(abs(diff(c(NA, sales))) == 
+                                                  max(abs(diff(c(NA, sales))), na.rm = TRUE), FALSE)],
+    .by = emp
+  )</code></pre>
+<pre><code>## # A tibble: 3 × 4
+##   emp    total_sales max_sales_change from_to_month
+##   &lt;chr&gt;        &lt;dbl&gt;            &lt;dbl&gt; &lt;chr&gt;        
+## 1 John          1240              143 May - Jun    
+## 2 Lisa           783              150 Jul - Aug    
+## 3 Robert         238              108 Aug - Sep</code></pre>
+<pre class="r"><code>## Approach-2
+df %&gt;% 
+  mutate(emp = case_match(sales, NA ~ emp_month)) %&gt;% 
+  fill(emp, .direction = &quot;down&quot;) %&gt;% 
+  na.omit() %&gt;% 
+  reframe(
+    total_sales = sum(sales),
+    sales_change = abs(diff(c(NA, sales))),
+    from_to_month = paste(lag(emp_month), 
+                          emp_month, 
+                          sep = &quot; - &quot;),
+    .by = emp
+  ) %&gt;% 
+  summarise(
+    total_sales = max(total_sales),
+    max_sales_change = max(sales_change, na.rm = TRUE),
+    from_to_month = from_to_month[which.max(sales_change)],
+    .by = emp
+  )</code></pre>
+<pre><code>## # A tibble: 3 × 4
+##   emp    total_sales max_sales_change from_to_month
+##   &lt;chr&gt;        &lt;dbl&gt;            &lt;dbl&gt; &lt;chr&gt;        
+## 1 John          1240              143 May - Jun    
+## 2 Lisa           783              150 Jul - Aug    
+## 3 Robert         238              108 Aug - Sep</code></pre>
+</div>
 
 
 

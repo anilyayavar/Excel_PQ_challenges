@@ -10,6 +10,40 @@ library(readxl)
 library(janitor)
 ```
 
+## Excel Challenge 448: Triangles
+```{r}
+triangle <- function(n){
+  reduce(seq(n), ~c(.x, list(seq((.y^2 - .y)/2 + 1, by = 1, length.out = .y)))) %>% 
+    {bind_cols(map_dfr(., ~ setNames(.x, paste0("V", seq(from = n, by = -1, length.out = length(.x))))),
+               map_dfr(., ~ setNames(.x, paste0("V", seq(from = n, by = 1, length.out = length(.x)))))[, -1])} %>% 
+    select(all_of(paste0("V", seq_along(.)))) %>% 
+    arrange(n:1) %>% 
+    as.matrix() %>% 
+    `colnames<-`(NULL)
+}
+
+map(c(1, 2, 4, 7), triangle)
+
+```
+
+
+
+## Excel Challenge 447: Penholodigital Squares
+```{r}
+Penholodigital <- numeric(0)
+for(i in ceiling(sqrt(123456789)):floor(sqrt(987654321))){
+  x <- unique(unlist(str_split(as.character(i^2), "")))
+  if("0" %in% x){
+    next
+  } else if (length(x) == 9){
+    Penholodigital <- c(Penholodigital, i^2)
+  }
+}
+Penholodigital
+```
+
+
+
 ## Excel Challenge 446
 ```{r}
 library(igraph)

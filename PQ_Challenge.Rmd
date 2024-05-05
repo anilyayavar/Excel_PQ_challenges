@@ -216,3 +216,46 @@ df |>
   na.omit()
 ```
 
+
+## PQ Challenge 180
+```{r}
+df <- read_xlsx("PQ/PQ_Challenge_180.xlsx", range = cell_cols(LETTERS[1:2])) %>% 
+  clean_names()
+
+## Approach-1
+df %>% 
+  mutate(emp = case_match(sales, NA ~ emp_month)) %>% 
+  fill(emp, .direction = "down") %>% 
+  na.omit() %>% 
+  summarise(
+    total_sales = sum(sales),
+    max_sales_change = max(abs(diff(c(NA, sales))), na.rm = TRUE),
+    from_to_month = paste(lag(emp_month), 
+                          emp_month, 
+                          sep = " - ")[coalesce(abs(diff(c(NA, sales))) == 
+                                                  max(abs(diff(c(NA, sales))), na.rm = TRUE), FALSE)],
+    .by = emp
+  )
+
+
+## Approach-2
+df %>% 
+  mutate(emp = case_match(sales, NA ~ emp_month)) %>% 
+  fill(emp, .direction = "down") %>% 
+  na.omit() %>% 
+  reframe(
+    total_sales = sum(sales),
+    sales_change = abs(diff(c(NA, sales))),
+    from_to_month = paste(lag(emp_month), 
+                          emp_month, 
+                          sep = " - "),
+    .by = emp
+  ) %>% 
+  summarise(
+    total_sales = max(total_sales),
+    max_sales_change = max(sales_change, na.rm = TRUE),
+    from_to_month = from_to_month[which.max(sales_change)],
+    .by = emp
+  )
+```
+
