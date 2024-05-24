@@ -359,10 +359,10 @@ display: none;
 
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-## ✔ dplyr     1.1.4     ✔ readr     2.1.5
+## ✔ dplyr     1.1.4     ✔ readr     2.1.4
 ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-## ✔ ggplot2   3.5.0     ✔ tibble    3.2.1
-## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.3     ✔ tidyr     1.3.0
 ## ✔ purrr     1.0.2     
 ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
@@ -376,6 +376,33 @@ library(janitor)</code></pre>
 ## The following objects are masked from &#39;package:stats&#39;:
 ## 
 ##     chisq.test, fisher.test</code></pre>
+<div id="excel-challenge-463" class="section level2">
+<h2>Excel Challenge 463</h2>
+<pre class="r"><code>inventory &lt;- read_excel(&quot;Excel/Excel_Challenge_463 - Inventory Calculation.xlsx&quot;,
+                        range = cell_cols(LETTERS[1:3]))
+
+
+inventory |&gt; 
+  mutate(Month = factor(Month, levels = month.abb, ordered = TRUE)) |&gt; 
+  complete(Month, fill = list(`Incoming Qty` = 0, `Outgoing Qty` = 0)) |&gt; 
+  mutate(Inventory = accumulate2(`Incoming Qty`, `Outgoing Qty`, .init = 0, 
+                                 .f = ~ ..1 + ..2 - ..3)[-1])</code></pre>
+<pre><code>## # A tibble: 12 × 4
+##    Month `Incoming Qty` `Outgoing Qty` Inventory
+##    &lt;ord&gt;          &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;
+##  1 Jan               15              8         7
+##  2 Feb                0              0         7
+##  3 Mar               20             12        15
+##  4 Apr                0              0        15
+##  5 May                0             14         1
+##  6 Jun                0              0         1
+##  7 Jul                0              0         1
+##  8 Aug               22             18         5
+##  9 Sep                0              0         5
+## 10 Oct                0              0         5
+## 11 Nov               27             25         7
+## 12 Dec                0              0         7</code></pre>
+</div>
 <div id="excel-challenge-448-triangles" class="section level2">
 <h2>Excel Challenge 448: Triangles</h2>
 <pre class="r"><code>triangle &lt;- function(n){
